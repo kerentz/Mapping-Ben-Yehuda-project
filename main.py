@@ -2,8 +2,8 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-import DB
 from flask import Flask, request, render_template
+from DB import db, Students
 app = Flask("KEREN")
 
 
@@ -16,24 +16,25 @@ def a():
 def parse_url():
     return f'Parsing {request.form.get("url")}, please wait....'
 
-
-@app.route('/register', methods=['GET', 'POST'])
-def aaa():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    DB.register(email, password)
-    return "abc"
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def bbb():
-    ans = DB.login(request.form.get('email'), request.form.get('password'))
-    return ans
+#
+# @app.route('/register', methods=['GET', 'POST'])
+# def aaa():
+#     email = request.form.get('email')
+#     password = request.form.get('password')
+#     DB.register(email, password)
+#     return "abc"
+#
+#
+# @app.route('/login', methods=['GET', 'POST'])
+# def bbb():
+#     ans = DB.login(request.form.get('email'), request.form.get('password'))
+#     return ans
 
 
 if __name__ == '__main__':
+    db.create_all()
+    db.session.add(Students("asd", "asd", "asd", "asd"))
     app.run('127.0.0.1', 5000)
-
 
 
 

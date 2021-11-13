@@ -1,19 +1,21 @@
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 
-conn = sqlite3.connect('test.db', check_same_thread=False)
-
-conn.execute('''CREATE TABLE IF NOT EXISTS USERS(
-         ID integer PRIMARY KEY AUTOINCREMENT,
-         EMAIL               TEXT    NOT NULL,
-         PASSWORD            TEXT     NOT NULL);''')
+app = Flask("DataBase")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.sqlite3'
+db = SQLAlchemy(app)
 
 
-def register(email, password):
-    conn.execute('''INSERT INTO USERS(EMAIL,PASSWORD) VALUES("%s","%s")''' % (email, password))
+class Students(db.Model):
+    id = db.Column('student_id', db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    city = db.Column(db.String(50))
+    addr = db.Column(db.String(200))
+    pin = db.Column(db.String(10))
 
 
-def login(email, password):
-    known_password = conn.execute('''SELECT PASSWORD FROM USERS where EMAIL="%s"''' % email)
-    if password == known_password.fetchone()[0]:
-        return 'yes'
-    return 'no'
+def __init__(self, name, city, addr, pin):
+    self.name = name
+    self.city = city
+    self.addr = addr
+    self.pin = pin
