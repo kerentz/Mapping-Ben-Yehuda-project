@@ -33,7 +33,6 @@ def parse_url():
 
 if __name__ == '__main__':
     db.create_all()
-    db.session.add(Students("asd", "asd", "asd", "asd"))
     app.run('127.0.0.1', 5000)
 
 
