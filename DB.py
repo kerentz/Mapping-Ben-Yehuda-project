@@ -8,6 +8,7 @@ db = SQLAlchemy(app)
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    work_id = db.Column(db.Integer)
     name = db.Column(db.String(100))
     link = db.Column(db.String(100))
     years = db.Column(db.String(200))
@@ -15,15 +16,17 @@ class Author(db.Model):
 
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    work_id = db.Column(db.Integer)
     name = db.Column(db.String(100))
     author = db.Column(db.Integer, Foreign_Key=Author.id)
+    edition = db.Column(db.String(100))
 
 
 class Story(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    work_id = db.Column(db.Integer)
     name = db.Column(db.String(100))
-    city = db.Column(db.String(50))
-    addr = db.Column(db.String(200))
-    pin = db.Column(db.String(10))
+    book = db.Column(db.Integer, Foreign_Key=Book.id)
+
 
 
