@@ -3,7 +3,8 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from flask import Flask, request, render_template
-from DB import db, Students
+from DB import db
+from ReadCvs import *
 app = Flask("KEREN")
 
 
@@ -33,6 +34,7 @@ def parse_url():
 
 if __name__ == '__main__':
     db.create_all()
+    create_data_dictionary_from_csv()
     app.run('127.0.0.1', 5000)
 
 
