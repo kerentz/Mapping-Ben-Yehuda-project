@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title> KEREN AND NAVE</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.11.3/af-2.3.7/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/b-print-2.0.1/cr-1.5.5/date-1.1.1/fc-4.0.1/fh-3.2.0/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.0/sp-1.4.0/sl-1.3.3/sr-1.0.0/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.11.3/af-2.3.7/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/b-print-2.0.1/cr-1.5.5/date-1.1.1/fc-4.0.1/fh-3.2.0/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.0/sp-1.4.0/sl-1.3.3/sr-1.0.0/datatables.min.js"></script>
+    <title>KEREN AND NAVE</title>
 </head>
 
+<script>$(document).ready(function () {
+    $('#table_id').DataTable({
+        data: [[1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8]],
+        columns: [
+            {title: "Name"},
+            {title: "Position"},
+            {title: "Office"},
+            {title: "Extn."},
+            {title: "Start date"},
+            {title: "Salary"},
+            {title: "Salary"},
+            {title: "Salary"}
+        ],
+        dom: 'Bfrtip',
+        buttons: ['copy', 'excel', 'pdf', 'colvis']
+    });
+});
+</script>
+
 <body>
-<h1>Welcome to *******</h1>
-<h2> Please insert a URL for Ben Yehuda project and we'll help you out</h2>
-<form action="/parse_url" method="POST">
-    <div>
-        <label for="url">What url are you interested in?</label>
-        <input name="url" id="url" placeholder="Insert url here">
-    </div>
-    <div>
-        <button>Parse this url</button>
-    </div>
-</form>
+<h1>Welcome</h1>
+<table id="table_id" class="display" width="100%">
+
+</table>
 </body>
 </html>
