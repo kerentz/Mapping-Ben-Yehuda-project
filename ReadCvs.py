@@ -1,6 +1,7 @@
 import csv
 import requests
 from bs4 import BeautifulSoup
+from DB import db, Work
 
 csv_data = {}
 
@@ -45,6 +46,35 @@ def enter_csv_to_db():
             if "פרוזה" in work_detail.text:
                 enter_short_story_to_db(book_id)
                 break
+
+
+def test():
+    work1 = Work(
+        general_note="bla bla",
+        genre="ddd",
+        author_id=5,
+        work_id=6,
+        h4="ddd",
+        edition_details="ddd",
+        h3="ddd",
+        edition_id="5-6",
+        p="ddd",
+        type="ddd",
+    )
+    work2 = Work(
+        general_note="היי",
+        genre="פרוזה",
+        author_id=5,
+        work_id=6,
+        h4="שלום",
+        edition_details="כיסא",
+        h3="ליד",
+        edition_id="5-6",
+        p="חלון",
+        type="סיפור קצר",
+    )
+    db.session.bulk_save_objects([work1, work2])
+    db.session.commit()
 
 
 def enter_short_story_to_db(book_id):

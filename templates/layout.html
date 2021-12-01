@@ -10,29 +10,39 @@
     <title>KEREN AND NAVE</title>
 </head>
 
-<script>$(document).ready(function () {
-    $('#table_id').DataTable({
-        data: [[1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8]],
-        columns: [
-            {title: "Name"},
-            {title: "Position"},
-            {title: "Office"},
-            {title: "Extn."},
-            {title: "Start date"},
-            {title: "Salary"},
-            {title: "Salary"},
-            {title: "Salary"}
-        ],
-        dom: 'Bfrtip',
-        buttons: ['copy', 'excel', 'pdf', 'colvis']
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: 'get_table_data',
+            success: function (response) {
+                let table_data = response.data
+                $('#table_id').DataTable({
+                data: table_data,
+                columns: [
+                    {title: "General Note"},
+                    {title: "Genre"},
+                    {title: "Author Id"},
+                    {title: "Work Id"},
+                    {title: "h4"},
+                    {title: "Edition Details"},
+                    {title: "h3"},
+                    {title: "Edition Id"},
+                    {title: "p"},
+                    {title: "Type"}
+                ],
+                dom: 'Bfrtip',
+                buttons: ['copy', 'excel', 'pdf', 'colvis']
+            })
+            }
+        })
     });
-});
+
 </script>
 
 <body>
 <h1>Welcome</h1>
 <table id="table_id" class="display" width="100%">
-
 </table>
 </body>
 </html>
