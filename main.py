@@ -19,11 +19,11 @@ def get_table_data():
                    work.genre,
                    work.author_id,
                    work.work_id,
-                   work.h4,
+                   work.work_name,
                    work.edition_details,
-                   work.h3,
+                   work.binding_book,
                    work.edition_id,
-                   work.p,
+                   work.more_information,
                    work.type,
                    ] for work in all_works]
     return {'data': table_data}

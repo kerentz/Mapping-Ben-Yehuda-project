@@ -54,11 +54,11 @@ def test():
         genre="ddd",
         author_id=5,
         work_id=6,
-        h4="ddd",
+        work_name="ddd",
         edition_details="ddd",
-        h3="ddd",
+        binding_book="ddd",
         edition_id="5-6",
-        p="ddd",
+        more_information="ddd",
         type="ddd",
     )
     work2 = Work(
@@ -66,11 +66,11 @@ def test():
         genre="פרוזה",
         author_id=5,
         work_id=6,
-        h4="שלום",
+        work_name="שלום",
         edition_details="כיסא",
-        h3="ליד",
+        binding_book="ליד",
         edition_id="5-6",
-        p="חלון",
+        more_information="חלון",
         type="סיפור קצר",
     )
     db.session.bulk_save_objects([work1, work2])
