@@ -35,8 +35,8 @@ def get_author_id(work_details, work_html):
     pass
 
 
-def get_work_name(work_details, work_html):
-    pass
+def get_work_name(work_html):
+    return work_html.body.find('div', attrs={'class': 'headline-1-v02'}).text
 
 
 def get_binding_book():
@@ -66,7 +66,7 @@ def parse_work(work_id):
     if not is_prose(work_details):
         return ""
     author_id = get_author_id(work_details, work_html)
-    work_name = get_work_name(work_details, work_html)
+    work_name = get_work_name(work_html)
     author_link = author_link_prefix + str(author_id)
     author_response = requests.get(author_link)
     if author_response.status_code != 200:
