@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from DB import db, Work
 import time
+import re
 
 WORK_ID_RANGE = 20
 work_link_prefix = "https://benyehuda.org/read/"
@@ -11,9 +12,8 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(WORK_ID_RANGE):
+        for work_id in range(17,20):
             work = parse_work(work_id)
-            print(work)
             if type(work) != str:
                 all_works.append(work)
             else:
@@ -32,28 +32,34 @@ def is_prose(work_details):
 
 
 def get_author_id(work_details, work_html):
-    pass
+    breadcrumbs_texts = work_html.body.find_all('div', attrs={'class': 'breadcrumbs-text'})
+    for breadcrumb in breadcrumbs_texts:
+        search_result = re.search('\/author\/(\d+)', str(breadcrumb))
+        if search_result is not None:
+            author_id = search_result.group(1)
+            break
+    return author_id
 
 
 def get_work_name(work_details, work_html):
-    pass
+    return "Not_Yet_Implemented"
 
 
 def get_binding_book():
     # should return string or None
-    pass
+    return "Not_Yet_Implemented"
 
 
 def get_general_note():
-    pass
+    return "Not_Yet_Implemented"
 
 
 def get_edition_details():
-    pass
+    return "Not_Yet_Implemented"
 
 
 def get_more_information():
-    pass
+    return "Not_Yet_Implemented"
 
 
 def parse_work(work_id):
@@ -67,7 +73,7 @@ def parse_work(work_id):
         return ""
     author_id = get_author_id(work_details, work_html)
     work_name = get_work_name(work_details, work_html)
-    author_link = author_link_prefix + str(author_id)
+    author_link = author_link_prefix + author_id
     author_response = requests.get(author_link)
     if author_response.status_code != 200:
         return f"author_link did not work for {work_id}"
@@ -80,7 +86,7 @@ def parse_work(work_id):
     return Work(
         general_note=general_note,
         genre="פרוזה",
-        author_id=author_id,
+        author_id=int(author_id),
         work_id=work_id,
         work_name=work_name,
         edition_details=edition_details,
