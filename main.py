@@ -50,10 +50,7 @@ def parse_url():
 
 
 if __name__ == '__main__':
-    # create_data_dictionary_from_csv()
-    # enter_csv_to_db()
     # db.create_all()
-    # create_data_dictionary_from_csv()
     app.run('127.0.0.1', 5000)
 
 # curl --data "email=keren" --data "password=hhh" http://127.0.0.1:5000/register
