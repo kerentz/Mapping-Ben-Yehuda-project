@@ -46,7 +46,10 @@ def get_binding_book_and_more_information(author_response, work_id):
     author_html = BeautifulSoup(author_response.text, 'html.parser')
     # TODO make sure v02 is the only version
     all_prose = author_html.body.find('div', attrs={'class': 'by-card-v02', 'id': 'works-prose'})
-    work_tag = all_prose.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'}).parent
+    work_tag = all_prose.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'})
+    if not work_tag:
+        return 'error', 'error'
+    work_tag = work_tag.parent
     if work_tag.name == 'h3':
         more_information = get_more_information(work_tag)
         return None, more_information
