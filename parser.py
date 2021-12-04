@@ -12,7 +12,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(153, 154):
+        for work_id in range(222, 223):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -60,7 +60,7 @@ def get_binding_book_and_more_information(author_response, work_id):
         return binding_book.text, more_information
     elif work_tag.name == 'p':
         binding_book = work_tag
-        while (binding_book.name != 'h3' and binding_book.name != 'h4') or "כרך" in binding_book.text:
+        while (binding_book.name != 'h3' and binding_book.name != 'h4') or "כרך" in binding_book.text or "https://benyehuda.org/read/" in str(binding_book):
             binding_book = binding_book.previous_sibling
             if not binding_book:
                 return None, None
