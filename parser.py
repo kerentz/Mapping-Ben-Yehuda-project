@@ -45,9 +45,27 @@ def get_work_name(work_html):
     return work_html.body.find('div', attrs={'class': 'headline-1-v02'}).text
 
 
-def get_binding_book():
-    # should return string or None
-    return "Not_Yet_Implemented"
+def get_binding_book_and_edition_details(author_response, work_id):
+    author_html = BeautifulSoup(author_response.text, 'html.parser')
+    work_tag = author_html.body.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'}).parent
+    if work_tag.name == 'h3':
+        more_information = get_more_information(work_tag)
+        # next_sibiling = work_tag.nextSibling.nextSibling
+        # if next_sibiling.name == 'p':
+        #     edition = next_sibiling.text
+        return None, more_information
+    elif work_tag.name == 'h4':
+        # TODO - find a good way to find edition details
+        binding_book = work_tag.find_previous_sibling('h3')
+        more_information = get_more_information(binding_book)
+        return binding_book.text, more_information
+    elif work_tag.name == 'p':
+        binding_book = work_tag
+        while binding_book.name != 'h3' and binding_book.name != 'h4':
+            binding_book = binding_book.previous_sibling
+        return binding_book.text, None
+    else:
+        'error', 'error'
 
 
 def get_general_note():
@@ -58,8 +76,11 @@ def get_edition_details():
     return "Not_Yet_Implemented"
 
 
-def get_more_information():
-    return "Not_Yet_Implemented"
+def get_more_information(work_tag):
+    next_sibiling = work_tag.nextSibling.nextSibling
+    if next_sibiling.name == 'p':
+        return next_sibiling.text
+    return None
 
 
 def parse_work(work_id):
@@ -73,14 +94,15 @@ def parse_work(work_id):
         return ""
     author_id = get_author_id(work_details, work_html)
     work_name = get_work_name(work_html)
-    author_link = author_link_prefix + str(author_id)
+    author_link = author_link_prefix + author_id
     author_response = requests.get(author_link)
     if author_response.status_code != 200:
         return f"author_link did not work for {work_id}"
-    binding_book = get_binding_book()
-    general_note = get_general_note()
     edition_details = get_edition_details()
-    more_information = get_more_information()
+    binding_book, more_information = get_binding_book_and_edition_details(author_response)
+    if binding_book == 'error':
+        return f"couldnt find {work_id} in the authors page"
+    general_note = get_general_note()
     type_of_work = "סיפור" if binding_book else "ספר"
 
     return Work(
@@ -95,5 +117,6 @@ def parse_work(work_id):
         more_information=more_information,
         type=type_of_work,
     )
+
 
 parse_ben_yehuda()
