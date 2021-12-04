@@ -12,7 +12,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(17,20):
+        for work_id in range(10922,10923):
             work = parse_work(work_id)
             if type(work) != str:
                 all_works.append(work)
@@ -31,7 +31,7 @@ def is_prose(work_details):
     return False
 
 
-def get_author_id(work_details, work_html):
+def get_author_id(work_html):
     breadcrumbs_texts = work_html.body.find_all('div', attrs={'class': 'breadcrumbs-text'})
     for breadcrumb in breadcrumbs_texts:
         search_result = re.search('\/author\/(\d+)', str(breadcrumb))
@@ -54,8 +54,11 @@ def get_general_note():
     return "Not_Yet_Implemented"
 
 
-def get_edition_details():
-    return "Not_Yet_Implemented"
+def get_edition_details(work_details):
+    for work_detail in work_details:
+        if "פרטי מהדורת מקור:" in work_detail.text:
+            return work_detail.text.replace("פרטי מהדורת מקור:", "")
+    return None
 
 
 def get_more_information():
@@ -71,7 +74,8 @@ def parse_work(work_id):
     work_details = work_html.body.find_all('div', attrs={'class': 'work-details'})
     if not is_prose(work_details):
         return ""
-    author_id = get_author_id(work_details, work_html)
+    edition_details = get_edition_details(work_details)
+    author_id = get_author_id(work_html)
     work_name = get_work_name(work_html)
     author_link = author_link_prefix + str(author_id)
     author_response = requests.get(author_link)
@@ -79,7 +83,7 @@ def parse_work(work_id):
         return f"author_link did not work for {work_id}"
     binding_book = get_binding_book()
     general_note = get_general_note()
-    edition_details = get_edition_details()
+
     more_information = get_more_information()
     type_of_work = "סיפור" if binding_book else "ספר"
 
