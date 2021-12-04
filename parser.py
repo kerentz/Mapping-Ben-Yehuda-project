@@ -44,7 +44,9 @@ def get_work_name(work_html):
 
 def get_binding_book_and_more_information(author_response, work_id):
     author_html = BeautifulSoup(author_response.text, 'html.parser')
-    work_tag = author_html.body.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'}).parent
+    # TODO make sure v02 is the only version
+    all_prose = author_html.body.find('div', attrs={'class': 'by-card-v02', 'id': 'works-prose'})
+    work_tag = all_prose.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'}).parent
     if work_tag.name == 'h3':
         more_information = get_more_information(work_tag)
         return None, more_information
@@ -124,9 +126,9 @@ def parse_work(work_id):
 
 parse_ben_yehuda()
 
-# author_link = author_link_prefix + '46'
+# author_link = author_link_prefix + '3'
 # author_response = requests.get(author_link)
-# x, y = get_binding_book_and_more_information(author_response, 37)
+# x, y = get_binding_book_and_more_information(author_response, 100)
 # print('binding book:')
 # print(x)
 # print('more information:')
