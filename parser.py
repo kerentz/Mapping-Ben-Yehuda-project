@@ -12,8 +12,9 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(10922,10923):
+        for work_id in range(100,200):
             work = parse_work(work_id)
+            print(work)
             if type(work) != str:
                 all_works.append(work)
             else:
@@ -45,14 +46,11 @@ def get_work_name(work_html):
     return work_html.body.find('div', attrs={'class': 'headline-1-v02'}).text
 
 
-def get_binding_book_and_edition_details(author_response, work_id):
+def get_binding_book_and_more_information(author_response, work_id):
     author_html = BeautifulSoup(author_response.text, 'html.parser')
     work_tag = author_html.body.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'}).parent
     if work_tag.name == 'h3':
         more_information = get_more_information(work_tag)
-        # next_sibiling = work_tag.nextSibling.nextSibling
-        # if next_sibiling.name == 'p':
-        #     edition = next_sibiling.text
         return None, more_information
     elif work_tag.name == 'h4':
         # TODO - find a good way to find edition details
@@ -102,7 +100,7 @@ def parse_work(work_id):
     author_response = requests.get(author_link)
     if author_response.status_code != 200:
         return f"author_link did not work for {work_id}"
-    binding_book, more_information = get_binding_book_and_edition_details(author_response)
+    binding_book, more_information = get_binding_book_and_more_information(author_response, work_id)
     if binding_book == 'error':
         return f"couldnt find {work_id} in the authors page"
     general_note = get_general_note()
@@ -121,5 +119,12 @@ def parse_work(work_id):
         type=type_of_work,
     )
 
-
 parse_ben_yehuda()
+
+# author_link = author_link_prefix + '399'
+# author_response = requests.get(author_link)
+# x, y = get_binding_book_and_more_information(author_response, 23590)
+# print('binding book:')
+# print(x)
+# print('more information:')
+# print(y)
