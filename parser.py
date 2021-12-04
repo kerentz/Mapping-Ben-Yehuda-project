@@ -12,17 +12,13 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(100,200):
+        for work_id in range(100, 200):
+            print(work_id)
             work = parse_work(work_id)
             print(work)
-            if type(work) != str:
-                all_works.append(work)
-            else:
+            if type(work) == str:
                 fd.write(work + "\n")
             time.sleep(1)
-
-        db.session.bulk_save_objects(all_works)
-        db.session.commit()
 
 
 def is_prose(work_details):
@@ -61,6 +57,8 @@ def get_binding_book_and_more_information(author_response, work_id):
         binding_book = work_tag
         while binding_book.name != 'h3' and binding_book.name != 'h4':
             binding_book = binding_book.previous_sibling
+            if not binding_book:
+                return None, None
         return binding_book.text, None
     else:
         'error', 'error'
@@ -106,7 +104,7 @@ def parse_work(work_id):
     general_note = get_general_note()
     type_of_work = "סיפור" if binding_book else "ספר"
 
-    return Work(
+    work = Work(
         general_note=general_note,
         genre="פרוזה",
         author_id=int(author_id),
@@ -119,11 +117,16 @@ def parse_work(work_id):
         type=type_of_work,
     )
 
+    db.session.add(work)
+    db.session.commit()
+
+    return work
+
 parse_ben_yehuda()
 
-# author_link = author_link_prefix + '399'
+# author_link = author_link_prefix + '46'
 # author_response = requests.get(author_link)
-# x, y = get_binding_book_and_more_information(author_response, 23590)
+# x, y = get_binding_book_and_more_information(author_response, 37)
 # print('binding book:')
 # print(x)
 # print('more information:')
