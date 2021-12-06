@@ -50,7 +50,7 @@ def parse_url():
 
 
 if __name__ == '__main__':
-    db.create_all()
+    # db.create_all()
     app.run('127.0.0.1', 5000)
 
 # curl --data "email=keren" --data "password=hhh" http://127.0.0.1:5000/register

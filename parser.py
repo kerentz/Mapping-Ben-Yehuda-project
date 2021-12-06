@@ -12,7 +12,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(200, 300):
+        for work_id in range(600, 700):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -29,13 +29,19 @@ def is_prose(work_details):
 
 
 def get_author_id(work_html):
-    breadcrumbs_texts = work_html.body.find_all('div', attrs={'class': 'breadcrumbs-text'})
-    for breadcrumb in breadcrumbs_texts:
-        search_result = re.search('\/author\/(\d+)', str(breadcrumb))
-        if search_result is not None:
-            author_id = search_result.group(1)
-            break
+    author_id = None
+    work_page_top_info_card = work_html.body.find('div', attrs={'class': 'work-page-top-info-card'})
+    search_result = re.search('\/author\/(\d+)', str(work_page_top_info_card))
+    if search_result is not None:
+        author_id = search_result.group(1)
     return author_id
+    # breadcrumbs_texts = work_html.body.find_all('div', attrs={'class': 'breadcrumbs-text'})
+    # for breadcrumb in breadcrumbs_texts:
+    #     search_result = re.search('\/author\/(\d+)', str(breadcrumb))
+    #     if search_result is not None:
+    #         author_id = search_result.group(1)
+    #         break
+    # return author_id
 
 
 def get_work_name(work_html):
@@ -46,6 +52,8 @@ def get_binding_book_and_more_information(author_response, work_id):
     author_html = BeautifulSoup(author_response.text, 'html.parser')
     # TODO make sure v02 is the only version
     all_prose = author_html.body.find('div', attrs={'class': 'by-card-v02', 'id': 'works-prose'})
+    if not all_prose:
+        return 'error', 'error'
     work_tag = all_prose.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'})
     if not work_tag:
         return 'error', 'error'
@@ -57,16 +65,29 @@ def get_binding_book_and_more_information(author_response, work_id):
         # TODO - find a good way to find edition details
         binding_book = work_tag.find_previous_sibling('h3')
         more_information = get_more_information(binding_book)
-        return binding_book.text, more_information
+        return clean_binding_book(binding_book), more_information
     elif work_tag.name == 'p':
         binding_book = work_tag
-        while (binding_book.name != 'h3' and binding_book.name != 'h4') or "כרך" in binding_book.text or "https://benyehuda.org/read/" in str(binding_book):
+        while (binding_book is not None) and (binding_book.name != 'h3' and binding_book.name != 'h4') or check_binding_book_problematic_cases(binding_book):
             binding_book = binding_book.previous_sibling
             if not binding_book:
                 return None, None
-        return binding_book.text, None
+        return clean_binding_book(binding_book), None
     else:
         'error', 'error'
+
+
+def clean_binding_book(binding_book):
+    if not binding_book or binding_book.text == "סיפורים" or binding_book.text == "סיפורים בלתי-מקובצים":
+        return None
+    return binding_book.text.replace(":", "").replace("”", "").replace("“", "")
+
+
+def check_binding_book_problematic_cases(binding_book):
+    return ("כרך" in binding_book.text
+            or "https://benyehuda.org/read/" in str(binding_book)
+            or "במקור" in binding_book.text
+            or re.search('.\.', str(binding_book)) is not None)
 
 
 def get_general_note():
@@ -76,13 +97,13 @@ def get_general_note():
 def get_edition_details(work_details):
     for work_detail in work_details:
         if "פרטי מהדורת מקור:" in work_detail.text:
-            return work_detail.text.replace("פרטי מהדורת מקור:", "")
+            return work_detail.text.replace("פרטי מהדורת מקור:", "").replace("מתוך:", "")
     return None
 
 
 def get_more_information(work_tag):
     next_sibiling = work_tag.nextSibling.nextSibling
-    if next_sibiling.name == 'p':
+    if next_sibiling is not None and next_sibiling.name == 'p':
         return next_sibiling.text
     return None
 
@@ -108,6 +129,9 @@ def parse_work(work_id):
         return f"couldnt find {work_id} in the authors page"
     general_note = get_general_note()
     type_of_work = "סיפור" if binding_book else "ספר"
+
+    if binding_book is not None and work_name is not None:
+        work_name = work_name.replace(binding_book, "").replace(':', "", 1).replace('– ', "", 1)
 
     work = Work(
         general_note=general_note,
