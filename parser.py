@@ -12,7 +12,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(600, 700):
+        for work_id in range(700, 800):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -56,7 +56,9 @@ def get_binding_book_and_more_information(author_response, work_id):
         return 'error', 'error'
     work_tag = all_prose.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'})
     if not work_tag:
-        return 'error', 'error'
+        work_tag = all_prose.find('a', attrs={'href': f'/read/{work_id}'})
+        if not work_tag:
+            return 'error', 'error'
     work_tag = work_tag.parent
     if work_tag.name == 'h3':
         more_information = get_more_information(work_tag)
@@ -104,7 +106,7 @@ def get_edition_details(work_details):
 def get_more_information(work_tag):
     next_sibiling = work_tag.nextSibling.nextSibling
     if next_sibiling is not None and next_sibiling.name == 'p':
-        return next_sibiling.text
+        return next_sibiling.text.replace("מתוך:", "")
     return None
 
 
