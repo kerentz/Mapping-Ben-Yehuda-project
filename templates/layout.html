@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.11.3/af-2.3.7/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/b-print-2.0.1/cr-1.5.5/date-1.1.1/fc-4.0.1/fh-3.2.0/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.0/sp-1.4.0/sl-1.3.3/sr-1.0.0/datatables.min.css"/>
@@ -9,9 +9,14 @@
             src="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.11.3/af-2.3.7/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/b-print-2.0.1/cr-1.5.5/date-1.1.1/fc-4.0.1/fh-3.2.0/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.0/sp-1.4.0/sl-1.3.3/sr-1.0.0/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"/>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css"/>
-    <title>KEREN AND NAVE</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.23/b-1.6.5/b-colvis-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+    <title>Mapping the Ben Yoda project</title>
 </head>
 
 <script>
@@ -37,7 +42,7 @@
                     ],
                     dom: 'Bfrtip',
                     colReorder: true,
-                    buttons: ['copy', 'excel', 'colvis'],
+                    buttons: ['copy', 'excel','csv', 'colvis'],
                 })
             }
         })
@@ -46,10 +51,15 @@
 </script>
 
 <body>
-<br>
-<h1>Welcome</h1>
-<br><br>
-<table id="table_id" class="display" width="100%">
-</table>
+    <a id="github_link" href="https://github.com/kerentz/our_website" class="fa fa-github"></a>
+    <br>
+    <h1>Mapping the Ben Yoda project</h1>
+    <br><br>
+    <table id="table_id" class="display" width="100%">
+    </table>
+    <footer>
+        <p>This website was created by Nave Dadon and Keren Tzkik</br>with the guidance of Dr. Yael Netzer, as part of Digital Humanities course at BGU, Israel.</p>
+    </footer>
 </body>
+
 </html>

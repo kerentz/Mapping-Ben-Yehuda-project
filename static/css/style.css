@@ -1,0 +1,60 @@
+body {
+    min-height: 100%;
+    margin-bottom: 200px;
+    clear: both;
+    background: #dee2e6;
+}
+
+h1{
+    color: #343a40;
+    text-align: center;
+    font-weight: 400;
+    text-decoration: #212529 underline;
+    letter-spacing: 5px ;
+    font-size: 40px;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+}
+
+.buttons-columnVisibility  {
+  background-color: black !important;
+  color: white;
+}
+.buttons-columnVisibility  {
+  background: white !important;
+  color: black;
+}
+
+.buttons-columnVisibility.active {
+  background: #495057 !important;
+  color: white; !important;
+}
+
+footer {
+    clear: both;
+    border: 1px groove #aaaaaa;
+    background: #495057;
+    color: White;
+    padding: 0px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: normal;
+    margin: 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.fa {
+    padding: 20px;
+    font-size: 50px;
+    width: 30px;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+#github_link {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}

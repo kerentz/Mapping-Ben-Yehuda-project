@@ -12,7 +12,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(222, 223):
+        for work_id in range(200, 300):
             print(work_id)
             work = parse_work(work_id)
             print(work)
