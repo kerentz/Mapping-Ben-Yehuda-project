@@ -11,7 +11,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        for work_id in range(1561, 1562):
+        for work_id in range(3540, 3541):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -47,35 +47,60 @@ def get_work_name(work_html):
     return work_html.body.find('div', attrs={'class': 'headline-1-v02'}).text
 
 
+def is_volume(item):
+    text = item.text
+    return text.startswith("כרך ") or text.startswith("חלק ")
+    # text = item.text
+    # if len(text) == 5 or len(text) == 6 and text.startswith("כרך "):
+    #     return text
+    # if text.startswith("חלק "):
+    #     return text
+    # return None
+
+
+def check_binding_book_problematic_cases(binding_book):
+    return ("href" in str(binding_book) or "במקור" in binding_book.text)
+
+
+def get_binding_book_and_volume(work_tag, possible_tags):
+    binding_book = work_tag
+    while binding_book and (binding_book.name not in possible_tags or check_binding_book_problematic_cases(binding_book)):
+        binding_book = binding_book.previous_sibling
+    if not binding_book:
+        return None, None
+    if not is_volume(binding_book):
+        return binding_book, None
+    volume = binding_book.text
+    binding_book = binding_book.previous_sibling
+    while binding_book and (binding_book.name not in possible_tags or check_binding_book_problematic_cases(binding_book) or is_volume(binding_book)):
+        binding_book = binding_book.previous_sibling
+    return binding_book, volume
+
+
 def get_binding_book_and_more_information(author_response, work_id):
     author_html = BeautifulSoup(author_response.text, 'html.parser')
     # TODO make sure v02 is the only version
     all_prose = author_html.body.find('div', attrs={'class': 'by-card-v02', 'id': 'works-prose'})
     if not all_prose:
-        return 'error', 'error'
+        return 'error', 'error', 'error'
     work_tag = all_prose.find('a', attrs={'href': f'https://benyehuda.org/read/{work_id}'})
     if not work_tag:
         work_tag = all_prose.find('a', attrs={'href': f'/read/{work_id}'})
         if not work_tag:
-            return 'error', 'error'
+            return 'error', 'error', 'error'
     work_tag = work_tag.parent
     if work_tag.name == 'h3':
         more_information = get_more_information(work_tag)
-        return None, more_information
+        return None, None, more_information
     elif work_tag.name == 'h4':
         # TODO - find a good way to find edition details
-        binding_book = work_tag.find_previous_sibling('h3')
-        more_information = get_more_information(binding_book)
-        return clean_binding_book(binding_book), more_information
+        binding_book, volume = get_binding_book_and_volume(work_tag, ['h3'])
+        return clean_binding_book(binding_book), volume, get_more_information(binding_book)
     elif work_tag.name == 'p' or work_tag.name == 'h5':
-        binding_book = work_tag
-        while (binding_book is not None) and (binding_book.name != 'h3' and binding_book.name != 'h4') or check_binding_book_problematic_cases(binding_book):
-            binding_book = binding_book.previous_sibling
-            if not binding_book:
-                return None, None
-        return clean_binding_book(binding_book), get_more_information(binding_book)
+        binding_book, volume = get_binding_book_and_volume(work_tag, ['h3', 'h4'])
+        return clean_binding_book(binding_book), volume, get_more_information(binding_book)
     else:
-        return 'error', 'error'
+        return 'error', 'error', 'error'
 
 
 def clean_binding_book(binding_book):
@@ -83,13 +108,6 @@ def clean_binding_book(binding_book):
         return None
     # TODO maybe check that the " " is the first and last characters?
     return binding_book.text.replace(":", "").replace("”", "").replace("“", "")
-
-
-def check_binding_book_problematic_cases(binding_book):
-    return ("כרך" in binding_book.text
-            or "https://benyehuda.org/read/" in str(binding_book)
-            or "במקור" in binding_book.text)
-            # or re.search('.\.', str(binding_book)) is not None)
 
 
 def get_general_note():
@@ -142,7 +160,7 @@ def parse_work(work_id):
     if author_response.status_code != 200:
         return f"author_link did not work for {work_id}"
     print(author_response, work_id)
-    binding_book, more_information = get_binding_book_and_more_information(author_response, work_id)
+    binding_book, volume, more_information = get_binding_book_and_more_information(author_response, work_id)
     if binding_book == 'error':
         return f"couldnt find {work_id} in the authors page"
     general_note = get_general_note()
@@ -158,6 +176,7 @@ def parse_work(work_id):
         work_name=work_name,
         edition_details=edition_details,
         binding_book=binding_book,
+        volume=volume,
         edition_id="",
         more_information=more_information,
         type=type_of_work,

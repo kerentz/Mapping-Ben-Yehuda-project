@@ -16,6 +16,7 @@ class Work(db.Model):
     work_name = db.Column(db.String(100))
     edition_details = db.Column(db.String(200))
     binding_book = db.Column(db.String(200))
+    volume = db.Column(db.String(200))
     edition_id = db.Column(db.String(200))
     more_information = db.Column(db.String(200))
     type = db.Column(db.String(200))
