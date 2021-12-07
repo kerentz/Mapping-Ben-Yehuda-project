@@ -11,7 +11,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        for work_id in range(1038, 1100):
+        for work_id in range(1561, 1562):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -73,7 +73,7 @@ def get_binding_book_and_more_information(author_response, work_id):
             binding_book = binding_book.previous_sibling
             if not binding_book:
                 return None, None
-        return clean_binding_book(binding_book), None
+        return clean_binding_book(binding_book), get_more_information(binding_book)
     else:
         return 'error', 'error'
 
@@ -88,8 +88,8 @@ def clean_binding_book(binding_book):
 def check_binding_book_problematic_cases(binding_book):
     return ("כרך" in binding_book.text
             or "https://benyehuda.org/read/" in str(binding_book)
-            or "במקור" in binding_book.text
-            or re.search('.\.', str(binding_book)) is not None)
+            or "במקור" in binding_book.text)
+            # or re.search('.\.', str(binding_book)) is not None)
 
 
 def get_general_note():
@@ -105,7 +105,7 @@ def get_edition_details(work_details):
 
 def get_more_information(work_tag):
     next_sibiling = work_tag.nextSibling.nextSibling
-    if next_sibiling is not None and next_sibiling.name == 'p':
+    if next_sibiling is not None and next_sibiling.name == 'p' and "/read/" not in str(work_tag):
         return next_sibiling.text.replace("מתוך:", "")
     return None
 
