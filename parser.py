@@ -12,7 +12,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
         all_works = []
-        for work_id in range(700, 800):
+        for work_id in range(1038, 1100):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -68,7 +68,7 @@ def get_binding_book_and_more_information(author_response, work_id):
         binding_book = work_tag.find_previous_sibling('h3')
         more_information = get_more_information(binding_book)
         return clean_binding_book(binding_book), more_information
-    elif work_tag.name == 'p':
+    elif work_tag.name == 'p' or  work_tag.name == 'h5':
         binding_book = work_tag
         while (binding_book is not None) and (binding_book.name != 'h3' and binding_book.name != 'h4') or check_binding_book_problematic_cases(binding_book):
             binding_book = binding_book.previous_sibling
@@ -76,7 +76,7 @@ def get_binding_book_and_more_information(author_response, work_id):
                 return None, None
         return clean_binding_book(binding_book), None
     else:
-        'error', 'error'
+        return 'error', 'error'
 
 
 def clean_binding_book(binding_book):
@@ -126,6 +126,7 @@ def parse_work(work_id):
     author_response = requests.get(author_link)
     if author_response.status_code != 200:
         return f"author_link did not work for {work_id}"
+    print(author_response, work_id)
     binding_book, more_information = get_binding_book_and_more_information(author_response, work_id)
     if binding_book == 'error':
         return f"couldnt find {work_id} in the authors page"
