@@ -11,7 +11,6 @@ author_link_prefix = "https://benyehuda.org/author/"
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        all_works = []
         for work_id in range(1038, 1100):
             print(work_id)
             work = parse_work(work_id)
@@ -82,6 +81,7 @@ def get_binding_book_and_more_information(author_response, work_id):
 def clean_binding_book(binding_book):
     if not binding_book or binding_book.text == "סיפורים" or binding_book.text == "סיפורים בלתי-מקובצים":
         return None
+    # TODO maybe check that the " " is the first and last characters?
     return binding_book.text.replace(":", "").replace("”", "").replace("“", "")
 
 
@@ -110,6 +110,21 @@ def get_more_information(work_tag):
     return None
 
 
+def remove_binding_book_from_work_name(work_name, binding_book):
+    if not work_name or not binding_book:
+        return work_name
+    for delimiter in [':', '-']:
+        if work_name.startswith(f'{binding_book} {delimiter} '):
+            return work_name.replace(f'{binding_book} {delimiter} ', "", 1)
+        elif work_name.startswith(f'{binding_book}{delimiter} '):
+            return work_name.replace(f'{binding_book}{delimiter} ', "", 1)
+        elif work_name.startswith(f'{binding_book} {delimiter}'):
+            return work_name.replace(f'{binding_book} {delimiter}', "", 1)
+        elif work_name.startswith(f'{binding_book}{delimiter}'):
+            return work_name.replace(f'{binding_book}{delimiter}', "", 1)
+    return work_name
+
+
 def parse_work(work_id):
     work_link = work_link_prefix + str(work_id)
     work_response = requests.get(work_link)
@@ -133,8 +148,7 @@ def parse_work(work_id):
     general_note = get_general_note()
     type_of_work = "סיפור" if binding_book else "ספר"
 
-    if binding_book is not None and work_name is not None:
-        work_name = work_name.replace(binding_book, "").replace(':', "", 1).replace('– ', "", 1)
+    work_name = remove_binding_book_from_work_name(work_name, binding_book)
 
     work = Work(
         general_note=general_note,
