@@ -68,7 +68,7 @@ def get_binding_book_and_more_information(author_response, work_id):
         binding_book = work_tag.find_previous_sibling('h3')
         more_information = get_more_information(binding_book)
         return clean_binding_book(binding_book), more_information
-    elif work_tag.name == 'p' or  work_tag.name == 'h5':
+    elif work_tag.name == 'p' or work_tag.name == 'h5':
         binding_book = work_tag
         while (binding_book is not None) and (binding_book.name != 'h3' and binding_book.name != 'h4') or check_binding_book_problematic_cases(binding_book):
             binding_book = binding_book.previous_sibling
