@@ -11,13 +11,13 @@ author_link_prefix = "https://benyehuda.org/author/"
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        for work_id in range(WORK_ID_RANGE):
+        for work_id in range(1, 30654):
             print(work_id)
             work = parse_work(work_id)
             print(work)
             if type(work) == str:
                 fd.write(work + "\n")
-            time.sleep(1)
+            time.sleep(0.2)
 
 
 def is_prose(work_details):
@@ -99,10 +99,18 @@ def get_binding_book_and_more_information(author_response, work_id):
 
 
 def clean_binding_book(binding_book):
-    if not binding_book or binding_book.text == "סיפורים" or binding_book.text == "סיפורים בלתי-מקובצים":
+    if not binding_book:
         return None
-    # TODO maybe check that the " " is the first and last characters?
-    return binding_book.text.replace(":", "").replace("”", "").replace("“", "")
+    name = binding_book.text
+    if len(name) == 0 or name == "סיפורים" or name == "סיפורים בלתי-מקובצים":
+        return None
+    if name[-1] == ":":
+        name = name[:-1]
+    if name[0] in ["”", "“"] and name[-1] in ["”", "“"]:
+        name = name[1:-1]
+    if len(name) == 0:
+        return None
+    return name
 
 
 def get_general_note(all_prose):
