@@ -102,7 +102,7 @@ def clean_binding_book(binding_book):
     if not binding_book:
         return None
     name = binding_book.text
-    if len(name) == 0 or name == "סיפורים" or name == "סיפורים בלתי-מקובצים":
+    if len(name) == 0 or name == "סיפורים בלתי-מקובצים":
         return None
     if name[-1] == ":":
         name = name[:-1]
