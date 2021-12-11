@@ -4,14 +4,14 @@ from DB import db, Work
 import time
 import re
 
-WORK_ID_RANGE = 100
+WORK_ID_RANGE = 1100
 work_link_prefix = "https://benyehuda.org/read/"
 author_link_prefix = "https://benyehuda.org/author/"
 
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        for work_id in range(1500, 2000):
+        for work_id in range(WORK_ID_RANGE):
             print(work_id)
             work = parse_work(work_id)
             print(work)
