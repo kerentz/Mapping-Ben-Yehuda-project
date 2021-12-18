@@ -26,6 +26,7 @@ def get_table_data():
                    work.edition_id,
                    work.more_information,
                    work.type,
+                   work.manually_changed
                    ] for work in all_works]
     return {'data': table_data}
 

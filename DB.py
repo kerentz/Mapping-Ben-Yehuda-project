@@ -20,3 +20,4 @@ class Work(db.Model):
     edition_id = db.Column(db.String(200))
     more_information = db.Column(db.String(200))
     type = db.Column(db.String(200))
+    manually_changed = db.Column(db.Boolean, default=False)

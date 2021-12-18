@@ -11,7 +11,7 @@ author_link_prefix = "https://benyehuda.org/author/"
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        for work_id in range(1, 30654):
+        for work_id in range(2252, 2253):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -194,6 +194,7 @@ def parse_work(work_id):
         edition_id="",
         more_information=more_information,
         type=type_of_work,
+        manually_changed=False
     )
 
     db.session.add(work)
