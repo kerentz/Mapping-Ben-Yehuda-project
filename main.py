@@ -4,7 +4,6 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from flask import Flask, request, render_template
 from DB import db, Work, app
-from ReadCvs import *
 
 
 @app.route('/')
