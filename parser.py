@@ -207,14 +207,15 @@ def parse_work(work_id):
 def generate_edition_id():
     for author_id in db.session.query(Work.author_id).distinct():
         print(author_id[0])
-        edition_id = 1
-        for edition in db.session.query(Work.edition_details).filter_by(author_id=author_id[0]).distinct():
-            print(edition[0])
-            db.session.query.filter_by(author_id=author_id[0], edition_details=edition[0]).update(dict(edition_id=f'{author_id[0]}-{edition_id}'))
-            edition_id = edition_id + 1
+        book_id = 1
+        for book in db.session.query(Work.binding_book).filter_by(author_id=author_id[0]).distinct():
+            if book[0]:
+                db.session.query(Work).filter_by(author_id=author_id[0], binding_book=book[0]).update(dict(edition_id=f'{author_id[0]}-{book_id}'))
+                book_id = book_id + 1
+    db.session.commit()
 
 
-generate_edition_id()
+# generate_edition_id()
 
 # author_link = author_link_prefix + '3'
 # author_response = requests.get(author_link)
