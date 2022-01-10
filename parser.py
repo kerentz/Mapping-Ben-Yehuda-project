@@ -1,17 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 from DB import db, Work
-import time
 import re
 
-WORK_ID_RANGE = 1100
+WORK_ID_RANGE = 30654
 work_link_prefix = "https://benyehuda.org/read/"
 author_link_prefix = "https://benyehuda.org/author/"
 
 
 def parse_ben_yehuda():
     with open('errors', 'w+') as fd:
-        for work_id in range(30332, 30333):
+        for work_id in range(1, WORK_ID_RANGE):
             print(work_id)
             work = parse_work(work_id)
             print(work)
@@ -33,13 +32,6 @@ def get_author_id(work_html):
     if search_result is not None:
         author_id = search_result.group(1)
     return author_id
-    # breadcrumbs_texts = work_html.body.find_all('div', attrs={'class': 'breadcrumbs-text'})
-    # for breadcrumb in breadcrumbs_texts:
-    #     search_result = re.search('\/author\/(\d+)', str(breadcrumb))
-    #     if search_result is not None:
-    #         author_id = search_result.group(1)
-    #         break
-    # return author_id
 
 
 def get_work_name(work_html):
@@ -72,7 +64,6 @@ def get_binding_book_and_volume(work_tag, possible_tags):
 
 def get_binding_book_and_more_information(author_response, work_id):
     author_html = BeautifulSoup(author_response.text, 'html.parser')
-    # TODO make sure v02 is the only version
     all_prose = author_html.body.find('div', attrs={'class': 'by-card-v02', 'id': 'works-prose'})
     if not all_prose:
         return 'error', 'error', 'error', 'error'
@@ -87,7 +78,6 @@ def get_binding_book_and_more_information(author_response, work_id):
         more_information = get_more_information(work_tag)
         return None, None, more_information, general_note
     elif work_tag.name == 'h4':
-        # TODO - find a good way to find edition details
         binding_book, volume = get_binding_book_and_volume(work_tag, ['h3'])
         return clean_binding_book(binding_book), volume, get_more_information(binding_book), general_note
     elif work_tag.name == 'p' or work_tag.name == 'h5':
@@ -196,12 +186,9 @@ def parse_work(work_id):
         manually_changed=False
     )
 
-    # db.session.add(work)
-    # db.session.commit()
-
+    db.session.add(work)
+    db.session.commit()
     return work
-
-# parse_ben_yehuda()
 
 
 def generate_edition_id():
@@ -215,12 +202,5 @@ def generate_edition_id():
     db.session.commit()
 
 
-# generate_edition_id()
-
-# author_link = author_link_prefix + '3'
-# author_response = requests.get(author_link)
-# x, y = get_binding_book_and_more_information(author_response, 100)
-# print('binding book:')
-# print(x)
-# print('more information:')
-# print(y)
+parse_ben_yehuda()
+generate_edition_id()
