@@ -31,8 +31,14 @@
                     columns: [
                         {title: "General Note"},
                         {title: "Genre"},
-                        {title: "Author Id"},
-                        {title: "Work Id"},
+                        {title: "Author Id",
+                            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<a href='https://benyehuda.org/author/"+oData[2]+"'>"+oData[2]+"</a>");
+                        }},
+                        {title: "Work Id",
+                            "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<a href='https://benyehuda.org/read/"+oData[3]+"'>"+oData[3]+"</a>");
+                        }},
                         {title: "work_name"},
                         {title: "Edition Details"},
                         {title: "binding_book"},
